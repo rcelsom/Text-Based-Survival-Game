@@ -66,5 +66,8 @@ bool Space::gotHypothermia()	{
 }
 
 void Space::buildShelter()	{}
+
 void Space::setEntered()	{}
-Space::~Space()		{}
+Space::~Space()		{
+	
+}

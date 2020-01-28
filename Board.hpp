@@ -26,11 +26,7 @@ public:
 	void printBoard();
 	void errorMessage();
 	void makeCharacter();
-	void moveCharacter();
-	void moveCharacterUp();
-	void moveCharacterDown();
-	void moveCharacterLeft();
-	void moveCharacterRight();
+	void moveCharacter( );
 	void moveCharacterShelter(Space* );
 	int getCharacterCol();
 	int getCharacterRow();

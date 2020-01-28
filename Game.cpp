@@ -85,75 +85,65 @@ void Game::moveNearestShelter()	{
 		std::cin.get();
 
 
-		
-		nearestShelter = getNearestShelter();
+		double distance = 0.0;
+		double shortestDistance = 0.0;
+
+		Space* temp = board.getHead();
+		Space* headRow = board.getHead();
+
+		//test board to find nearest shelter
+		for (int i = 0; i < 5; i++)	{
+			for (int j = 0; j < 5; j++)	{
+				//finds shelters
+				if (temp->hasShelter()) 	{
+					distance = calculateDistance(j, i);
+					//set shortest distance to first distance found
+					if (shortestDistance == 0.0)	{
+						shortestDistance = distance;
+					}
+					//compare next distances found to shortest distance and set as shortest distance if shorter
+					if (distance <= shortestDistance)	{
+						shortestDistance = distance;
+						nearestShelter = temp;
+					}
+				}
+				//moves to next spot on board
+				temp = temp->getPointer("right");
+			}
+			//move to next row
+			headRow = headRow->getPointer("down");
+			temp = headRow;
+		}
+	}
+	else 	{
+		nearestShelter = board.getCharacterSpace();
 	}
 			
 	//moves character to nearest shelter if there is one and test if user got hypothermia
 	if (nearestShelter != nullptr)	{
 		board.moveCharacterShelter(nearestShelter);
-		board.printBoard();
+			board.printBoard();
 		std::cout << "You returned to a shelter for the night." << std::endl;
-		makeFire();
-	}
-}
-
-//calculates nearest shelter distance
-Space* Game::getNearestShelter()	{
-	Space* nearestShelter = NULL;
-	Space* temp = board.getHead();
-	Space* headRow = board.getHead();
-
-	double distance = 0.0;
-	double shortestDistance = -1.0;
-	
-	//loops through 2d linked list board in order to find all shelters
-	for (int i = 0; i < 5; i++)	{
-		for (int j = 0; j < 5; j++)	{
-			//finds shelters
-			if (temp->hasShelter()) 	{
-				distance = calculateDistance(j, i);
-				shortestDistance = updateMinDistance(temp, nearestShelter, distance);
+		if (backpack.at("wood") > 0 && backpack.at("matches") > 0)	{
+			std::string userChoice = validStr( "Would you like to build a fire to reduce hypothermia for 4 pieces of wood and 1 match? (Y/N)");
+			updateWood(-4);
+			backpack.at("matches") -= 1;
+			if (userChoice == "N" || userChoice == "n")	{
+				gameFinished = (board.getCharacterSpace())->gotHypothermia();
 			}
-			//moves to next spot on board
-			temp = temp->getPointer("right");
 		}
-		//move to next row
-		headRow = headRow->getPointer("down");
-		temp = headRow;
-	}
-	return nearestShelter;
-}
-
-int Game::updateMinDistance(Space* currentSpace, Space* nearestShelter, int distance)	{
-	if (distance <= shortestDistance || shortestDistance == -1.0)	{
-		shortestDistance = distance;
-		nearestShelter = currentSpace;
-	}
-	
-}
-
-//calculates if user can build fire, then prompts to build a fire
-void Game::makeFire()	{
-	if (backpack.at("wood") > 3 && backpack.at("matches") > 0)	{
-		std::string userChoice = validStr( "Would you like to build a fire to reduce hypothermia for 4 pieces of wood and 1 match? (Y/N)");
-		updateWood(-4);
-		backpack.at("matches") -= 1;
-		if (userChoice == "N" || userChoice == "n")	{
+		else if (backpack.at("wood") <= 0)	{
+			std::cout << "Unfortunately, you do not have enough wood for a fire to eliminate the chances of hypothermia."<<std::endl;
 			gameFinished = (board.getCharacterSpace())->gotHypothermia();
 		}
-	}
-	else if (backpack.at("wood") <= 0)	{
-		std::cout << "Unfortunately, you do not have enough wood for a fire to eliminate the chances of hypothermia."<<std::endl;
-		gameFinished = (board.getCharacterSpace())->gotHypothermia();
-	}
-	else 	{
-		std::cout << "Unfortunately, you do not have any way to start a fire to eliminate the chances of hypothermia."<<std::endl;
-		gameFinished = (board.getCharacterSpace())->gotHypothermia();
-	}
-	
-	if (!gameFinished)	{
+		else 	{
+			std::cout << "Unfortunately, you do not have any way to start a fire to eliminate the chances of hypothermia."<<std::endl;
+			gameFinished = (board.getCharacterSpace())->gotHypothermia();
+		}
+		
+		if (!gameFinished)	{
 			std::cout << "\nYou dodged hypothermia and survived the night!" << std::endl;
+		}
 	}
 }
 
@@ -165,11 +155,26 @@ double Game::calculateDistance(int col, int row)	{
 //calls enterSpace from certain space types passing needed parameter
 void Game::interactWithSpace()	{
 	int tempInt = 0;
-	//if the character is in the space to win the game
 	if (board.getCharacterSpace() == board.getExitSpace())	{
 		board.setPrintExit();
-		interactWithCar(backpack.at("keys"));
+		if (backpack.at("keys") == 1)	{
+			std::string finalChoice = validStr("You found a car! Would you like to use your key to see if it starts? (Y/N)");
+			if (finalChoice == "Y" || finalChoice =="y")	{
+				gameFinished = true;
+				wonGame = true;	
+				std::cout << "\nThe car started! You used it to return to civilization!" << std::endl << std::endl;
+			}
+			else	{
+				std::cout << "Ok. Continue searching on a way to leave the woods!" << std::endl << std::endl;
+			}
+		}
+		else	{
+			std::cout << "You found a car! If only you had a key to start it up!" << std::endl;
+			board.setPrintExit();
+			std::cout << "After this turn, it will be marked on your map with a XX symbol" << std::endl;
+		}
 	}
+		
 	else if (board.getCharacterSpace()->getType() == "creek")	{
 		tempInt = (board.getCharacterSpace())->enterSpace(backpack.at("water"));
 		updateWater(tempInt);
@@ -183,25 +188,6 @@ void Game::interactWithSpace()	{
 	else 	{
 		tempInt = (board.getCharacterSpace())->enterSpace(backpack.at("wood"));
 		updateWood(tempInt);
-	}
-}
-
-void Game::interactWithCar(int key)	{
-	if (key == 1)	{
-		std::string finalChoice = validStr("You found a car! Would you like to use your key to see if it starts? (Y/N)");
-		if (finalChoice == "Y" || finalChoice =="y")	{
-			gameFinished = true;
-			wonGame = true;	
-			std::cout << "\nThe car started! You used it to return to civilization!" << std::endl << std::endl;
-		}
-		else	{
-			std::cout << "Ok. Continue searching on a way to leave the woods!" << std::endl << std::endl;
-		}
-	}
-	else	{
-		std::cout << "You found a car! If only you had a key to start it up!" << std::endl;
-		board.setPrintExit();
-		std::cout << "After this turn, it will be marked on your map with a XX symbol" << std::endl;
 	}
 }
 

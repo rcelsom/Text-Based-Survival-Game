@@ -23,7 +23,7 @@ public:
 	bool gotHypothermia();
 	bool getHypothermiaFlag();
 	void makeSpace(Space* ptr, int col, int row);
-	int buildShelter(int );
+	void buildShelter();
 	void buildFire();
 	void extinguishFire();
 	bool hasFire();

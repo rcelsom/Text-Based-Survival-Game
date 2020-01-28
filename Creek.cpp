@@ -23,10 +23,9 @@ bool Creek::gotSick()	{
 	}
 }
 
-//fills canteen if user chooses to
+//resets water
 int Creek::enterSpace(int waterLevel)	{
 	std::string choice = validStr("You just found a creek! Would you like to refill your canteen? (Y/N) \n");
-	
 	if (choice == "Y" || choice == "y")	{
 		std::cout << "You just found water to fill your canteen! Your water level is now full!" << std::endl;
 		return 100;

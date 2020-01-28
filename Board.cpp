@@ -111,63 +111,43 @@ void Board::moveCharacter()	{
 						  " 1. Up \n 2. Down \n 3. Left \n 4. Right\n", 1, 4);
 	switch(choice) {
 	case 1:
-		moveCharacterUp();
+		if (character->getPointer("up") != nullptr)	{	
+			character = character->getPointer("up");
+			characterRow -= 1;
+		}
+		else	{
+			errorMessage();
+		}
 		return;
 	case 2:
-		moveCharacterDown();
+		if (character->getPointer("down") != nullptr)	{	
+			character = character->getPointer("down");
+			characterRow += 1;
+		}
+		else	{
+			errorMessage();
+		}
 		return;
 	case 3:
-		moveCharacterLeft();
+		if (character->getPointer("left") != nullptr)	{	
+			character = character->getPointer("left");
+			characterCol -= 1;
+		}
+		else	{
+			errorMessage();
+		}
 		return;
 	case 4:
-		moveCharacterRight();
+		if (character->getPointer("right") != nullptr)	{	
+			character = character->getPointer("right");
+			characterCol += 1;
+		}
+		else	{
+			errorMessage();
+		}
 		return;
 		
 	}
-}
-
-//moves character up
-void Board::moveCharacterUp()	{
-	if (character->getPointer("up") != nullptr)	{	
-		character = character->getPointer("up");
-		characterRow -= 1;
-	}
-	else	{
-		errorMessage();
-	}
-}
-
-//moves character down
-void Board::moveCharacterDown()	{
-	if (character->getPointer("down") != nullptr)	{	
-		character = character->getPointer("down");
-		characterRow += 1;
-	}
-	else	{
-		errorMessage();
-	}
-}
-
-//moves character  left
-void Board::moveCharacterLeft()	{
-	if (character->getPointer("left") != nullptr)	{	
-		character = character->getPointer("left");
-		characterCol -= 1;
-	}
-	else	{
-		errorMessage();
-	}
-}
-
-//moves character right
-void Board::moveCharacterRight()	{
-	if (character->getPointer("right") != nullptr)	{	
-		character = character->getPointer("right");
-		characterCol += 1;
-	}
-	else	{
-		errorMessage();
-	}	
 }
 
 //moves character to nearest shelter pointer
@@ -205,17 +185,14 @@ Space* Board::getHead()	{
 	return head;
 }
 
-//returns the exitSpace pointer
 Space* Board::getExitSpace()	{
 	return exitSpace;
 }
 
-//sets flag to print instructions in exit square
 void Board::setPrintExit()	{
 	printExit = true;
 }
 
-//returns flag if it is time to print exit
 bool Board::printExitSpace()	{
 	return printExit;
 }
@@ -234,7 +211,6 @@ void Board::printBoard()	{
 	for (int i = 0; i < 50; i++)	{
 		std::cout << std::endl;
 	}
-	//sets board symbols
 	std::string tree = " $$ ";
 	std::string cabin = " ?! ";
 	std::string grass = " __ ";
@@ -243,8 +219,6 @@ void Board::printBoard()	{
 	std::cout << "-----------------MAP-----------------" << std::endl;
 	Space* temp;
 	Space* headRow = head;
-	
-	//prints board
 	for (int i = 0; i < 5; i ++)	{
 		temp = headRow;
 		std::cout << "       |";
@@ -277,7 +251,6 @@ void Board::printBoard()	{
 		std::cout << "|" << std::endl;
 		headRow = headRow->getPointer("down");
 	}
-	//print key describing board
 	std::cout <<"_____________________________________" << std::endl;
 	std::cout << "               KEY                  "<<std::endl;
 	std::cout << "  $$ = trees          __ = grass    " <<std::endl;
@@ -285,7 +258,6 @@ void Board::printBoard()	{
 	std::cout << "  ## = position of character        " << std::endl;
 	std::cout <<"_____________________________________" << std::endl;
 	
-	//print blank lines for spacing
 	for (int i = 0; i < 10; i++)	{
 		std::cout << std::endl;
 	}

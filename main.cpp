@@ -3,7 +3,6 @@
 #include <iostream>
 
 int menu ()	{
-	//Display instructions for the user
 	std::cout << "\n\nWelcome to a Wilderness Survival Game." << std::endl<<std::endl;
 	std::cout << "The goal is to figure out how to exit the woods before a tornado hits and return back to your\n"\
 				"life in civilization.\n" << std::endl << std::endl;
@@ -19,7 +18,6 @@ int menu ()	{
 				"about hypothermia during the night. Luckily, there are ways to avoid those." << std::endl << std::endl;
 	
 	std::string userChoice = validStr("\nWould you like to play this game? (Y/N) \n");
-	
 	if (userChoice == "Y" || userChoice == "y")	{
 		return 1;
 	}

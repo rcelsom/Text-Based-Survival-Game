@@ -16,33 +16,26 @@ std::string Cabin::getType()	{
 	return "cabin";
 }
 
-//pass parameter only to fit virtual space function in project requirements, do not need in parameter
-int Cabin::enterSpace(int nullParam)		{
-	int numMatches = 0;
-	
+//pass key parameter only to make it fit virtual space function, do not need in parameter
+int Cabin::enterSpace(int numKeys)		{
 	if (!hasEntered)	{
-		numMatches = exploreCabin();	
+		std::string choice = validStr("You just found the remnants of an old cabin! Unfortunatly it does not look stable enough to live in.\n"\
+									  "Would you like to enter the cabin and explore? (Y/N)\n");
+
+		if (choice == "Y" || choice == "y")	{
+			hasEntered = true;
+			return 5;
+
+		}
+		else	{
+			std::cout << "You left the creepy cabin alone, you must watch horror movies. You can return at any time." << std::endl;
+		}
 	}
 	else	{
 		std::cout << "You returned to the creepy cabin. There is nothing new to find here." << std::endl;
 	}
-	
-	return numMatches;
-}
-
-//explores cabin and returns 5 matches if the user entered it. 
-int Cabin::exploreCabin(int numKeys)	{
-	std::string choice = validStr("You just found the remnants of an old cabin! Unfortunatly it does not look stable enough to live in.\n"\
-									  "Would you like to enter the cabin and explore? (Y/N)\n");
-
-	if (choice == "Y" || choice == "y")	{
-		hasEntered = true;
-		return 5;
-	}
-	else	{
-			std::cout << "You left the creepy cabin alone, you must watch horror movies. You can return at any time." << std::endl;
-	}
-	
 	return 0;
 }
+
+
 		

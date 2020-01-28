@@ -34,12 +34,8 @@ public:
 	Game();
 	void updateTime();
 	void moveNearestShelter();
-	Space* getNearestShelter();
-	int updateMinDistance(Space*, Space*, int);
 	double calculateDistance(int, int);
 	void interactWithSpace();
-	void interactWithCar(int);
-	void makeFire();
 	void addToBackpack(std::string, int);
 	
 	void printMap();
